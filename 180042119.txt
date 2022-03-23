@@ -1,0 +1,58 @@
+title This is a title
+
+
+
+participant user
+participant POS
+participant shop
+
+participant custDb
+participant pizzaDb
+participant payment
+participant webInterface
+
+
+
+shop->POS: register shop
+note over shop: provide pizza name, type, specialty, size, price, offer of different pizza shop
+POS<--shop: register successful
+
+loop
+user->POS:1. search pizza
+activate POS
+note over pizzaDb: store pizza name, type, specialty, size, price, offer of different pizza shop
+POS->pizzaDb: 2.retrieve pizza
+deactivate POS
+activate pizzaDb
+POS<--pizzaDb:3.result
+deactivate pizzaDb
+activate user
+user->POS:4. add pizza to cart
+deactivate user
+end
+user->POS: register
+POS->custDb: save customer
+alt  registered user?
+POS<--custDb: retrieve info
+else 
+user->POS: 5. set delivery address
+
+user<--POS: 6. ask payments option
+
+
+alt payment option 
+user->payment: 7.select debit card payment option
+note over payment:store card holder’s name, card number, the expiry date
+else 
+user->payment: 7.select mkash payment option
+note over payment:store Name and mobile number
+end
+end
+
+POS->shop: send notification
+shop->webInterface: shop manager views order details
+
+
+
+
+
